@@ -9,7 +9,7 @@ import OpenAI from "openai";
 // Initialize OpenAI client with DeepSeek API key and base URL
 const openai = new OpenAI({
     baseURL: 'https://api.deepseek.com',
-    apiKey: process.env.DEEPSEEK_API_KEY
+    apiKey: 'sk-2b242087429041ac8d0a78ed3ec6cb19'
 });
 
 export async function POST(req){
@@ -32,7 +32,7 @@ export async function POST(req){
 
         // Create a user message object
         const userPrompt = {
-            role: "user",
+            role: "system",
             content: prompt,
             timestamp: Date.now()
         };
@@ -40,14 +40,14 @@ export async function POST(req){
         data.messages.push(userPrompt);
 
         // Call the DeepSeek API to get a chat completion
-
+        console.log(prompt);
         const completion = await openai.chat.completions.create({
-            messages: [{ role: "user", content: prompt }],
+            messages: [{ role: "system", content: "You are a helpful assistant." }],
             model: "deepseek-chat",
-            store: true,
-        });
-
-        const message = completion.choices[0].message;
+          });
+        
+        console.log(completion.choices[0].message.content);
+        console.log(completion);
         message.timestamp = Date.now()
         data.messages.push(message);
         data.save();
